@@ -87,13 +87,19 @@ sub start {
 sub drive_forward {
     my ($self, $mode) = @_;
 
-    $self->send_command("${DRIVEDIRECT}\x01\xF4\x01\xF4${SEP}");
+    my $left = pack('n',500);
+    my $right = pack('n',500);
+
+    $self->send_command("${DRIVEDIRECT}${right}${left}${SEP}");
 }
 
 sub drive_backward {
     my ($self, $mode) = @_;
 
-    $self->send_command("${DRIVEDIRECT}\xFE\x0C\xFE\x0C${SEP}");
+    my $left = pack('n',-500);
+    my $right = pack('n',-500);
+
+    $self->send_command("${DRIVEDIRECT}${right}${left}${SEP}");
 }
 
 sub drive_stop {
