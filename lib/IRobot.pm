@@ -68,6 +68,9 @@ my $DRIVEDIRECT = "\x91"; # 145
 
 my $SEP         = "\t";
 
+# lowest speed before pack + concat breaks things
+my $default_speed = 258;
+
 #-----------------------------------------------------------
 #
 # Commands
@@ -85,37 +88,44 @@ sub start {
 }
 
 sub drive_forward {
-    my ($self, $mode) = @_;
+    my ($self,$left, $right) = @_;
 
-    my $left = pack('n',500);
-    my $right = pack('n',500);
+
+    $left = $default_speed if( !defined($left) || $left < $default_speed );
+    $right = $default_speed if( !defined($right) || $right < $default_speed );
+
+    $left = pack('n', $left);
+    $right = pack('n', $right);
 
     $self->send_command("${DRIVEDIRECT}${right}${left}${SEP}");
 }
 
 sub drive_backward {
-    my ($self, $mode) = @_;
+    my ($self, $left, $right) = @_;
 
-    my $left = pack('n',-500);
-    my $right = pack('n',-500);
+    $left = $default_speed if( !defined($left) || $left < $default_speed );
+    $right = $default_speed if( !defined($right) || $right < $default_speed );
+
+    $left = pack('n', -$left);
+    $right = pack('n', -$right);
 
     $self->send_command("${DRIVEDIRECT}${right}${left}${SEP}");
 }
 
 sub drive_stop {
-    my ($self, $mode) = @_;
+    my ($self) = @_;
 
     $self->send_command("${DRIVEDIRECT}\x00\x00\x00\x00${SEP}");
 }
 
-sub turn_left {
-    my ($self, $mode) = @_;
+sub spin_left {
+    my ($self) = @_;
 
     $self->send_command("${DRIVE}\x00\x64\xFF\xFF${SEP}");
 }
 
-sub turn_right {
-    my ($self, $mode) = @_;
+sub spin_right {
+    my ($self) = @_;
 
     $self->send_command("${DRIVE}\x00\x64\x00\x01${SEP}");
 }
