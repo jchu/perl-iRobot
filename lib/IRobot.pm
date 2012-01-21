@@ -121,7 +121,9 @@ sub drive_stop {
 sub spin_left {
     my ($self) = @_;
 
-    $self->send_command("${DRIVE}\x00\x64\xFF\xFF${SEP}");
+    # remove second FF
+    #$self->send_command("${DRIVE}\x00\x64\xFF\xFF${SEP}");
+    $self->send_command("${DRIVE}\x00\x64\xFF${SEP}");
 }
 
 sub spin_right {
