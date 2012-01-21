@@ -22,6 +22,7 @@ my $arrow_key_filter = sub {
     given( $_[0]->type ) {
         when SDL_KEYDOWN { return 1; }
         when SDL_KEYUP { return 1; }
+        when SDL_QUIT { return 1; }
         default { return 0; }
     }
 };
@@ -43,12 +44,20 @@ my $module = IRobot->new({
     });
 
 SDL::init(SDL_INIT_VIDEO);
+init_robot();
 my $display = SDL::Video::set_video_mode(100,50,32, SDL_SWSURFACE );
 
 my $event = SDL::Event->new();
 
 while(1) {
     if( SDL::Events::poll_event($event) ) {
+        if( $event->type == SDL_QUIT ) {
+            print "Exiting...\n";
+            $module->drive_stop();
+            sleep(1);
+            SDL::quit();
+            exit 0;
+        }
         given( $event->key_sym ) {
             when SDLK_LEFT {
                 if( $event->type == SDL_KEYDOWN ) {
@@ -146,6 +155,10 @@ while(1) {
 }
 
 sub init_robot() {
+    print "Initializing robot...\n";
     $module->start(1);
     sleep(1);
+    $module->drive_stop();
+    sleep(1);
+    print "Initialized!\n";
 }
