@@ -66,7 +66,8 @@ my $FULLMODE    = "\x84"; # 132
 my $DRIVE       = "\x89"; # 137
 my $DRIVEDIRECT = "\x91"; # 145
 
-my $SEP         = "\t";
+my $PRE          = "R";
+my $POST         = "\t";
 
 # lowest speed before pack + concat breaks things
 my $default_speed = 258;
@@ -81,9 +82,9 @@ sub start {
     my ($self, $mode) = @_;
 
     if( $mode ) {
-        $self->send_command("${START}${FULLMODE}${SEP}");
+        $self->send_command("${START}${FULLMODE}");
     } else {
-        $self->send_command("${START}${SAFEMODE}${SEP}");
+        $self->send_command("${START}${SAFEMODE}");
     }
 }
 
@@ -97,7 +98,7 @@ sub drive_forward {
     $left = pack('n', $left);
     $right = pack('n', $right);
 
-    $self->send_command("${DRIVEDIRECT}${right}${left}${SEP}");
+    $self->send_command("${DRIVEDIRECT}${right}${left}");
 }
 
 sub drive_backward {
@@ -109,13 +110,13 @@ sub drive_backward {
     $left = pack('n', -$left);
     $right = pack('n', -$right);
 
-    $self->send_command("${DRIVEDIRECT}${right}${left}${SEP}");
+    $self->send_command("${DRIVEDIRECT}${right}${left}");
 }
 
 sub drive_stop {
     my ($self) = @_;
 
-    $self->send_command("${DRIVEDIRECT}\x00\x00\x00\x00${SEP}");
+    $self->send_command("${DRIVEDIRECT}\x00\x00\x00\x00");
 }
 
 sub spin_left {
@@ -123,13 +124,13 @@ sub spin_left {
 
     # remove second FF
     #$self->send_command("${DRIVE}\x00\x64\xFF\xFF${SEP}");
-    $self->send_command("${DRIVE}\x00\x64\xFF${SEP}");
+    $self->send_command("${DRIVE}\x00\x64\xFF");
 }
 
 sub spin_right {
     my ($self) = @_;
 
-    $self->send_command("${DRIVE}\x00\x64\x00\x01${SEP}");
+    $self->send_command("${DRIVE}\x00\x64\x00\x01");
 }
 
 #-----------------------------------------------------------
@@ -147,7 +148,7 @@ sub send_command {
     #    return false;
     #}
     
-    $self->comm->send($command);
+    $self->comm->send("${PRE}${command}${POST}");
 }
 
 sub _build_comm {
