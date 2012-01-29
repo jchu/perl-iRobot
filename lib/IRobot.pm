@@ -124,13 +124,13 @@ sub spin_left {
 
     # remove second FF
     #$self->send_command("${DRIVE}\x00\x64\xFF\xFF${SEP}");
-    $self->send_command("${DRIVE}\x00\x64\xFF");
+    $self->send_command("${DRIVE}\x00\x64\x00\x01");
 }
 
 sub spin_right {
     my ($self) = @_;
 
-    $self->send_command("${DRIVE}\x00\x64\x00\x01");
+    $self->send_command("${DRIVE}\x00\x64\xFF");
 }
 
 #-----------------------------------------------------------
