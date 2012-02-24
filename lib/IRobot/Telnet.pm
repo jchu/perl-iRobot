@@ -33,7 +33,7 @@ sub send {
     my $self = shift;
     my $cmd = shift;
 
-    warn "Sending command: $cmd";
+    #warn "Sending command: $cmd";
     $self->telnet->put($cmd);
 }
 
